@@ -1,0 +1,63 @@
+<script type="text/javascript" src="{{ "/assets/js/libs/jquery.min.js" | prepend: site.baseurl }}"></script>
+<script type="text/javascript" src="{{ "/assets/js/libs/slidebars.min.js" | prepend: site.baseurl }}"></script>
+<script type="text/javascript" src="{{ "/assets/js/libs/jquery.backstretch.min.js" | prepend: site.baseurl }}"></script>
+<script type="text/javascript" src="{{ "/assets/js/libs/jquery.scrollstop.js" | prepend: site.baseurl }}"></script>
+<script type="text/javascript" src="{{ "/assets/js/libs/rrssb.min.js" | prepend: site.baseurl }}"></script>
+<script type="text/javascript" src="{{ "/assets/js/functions.js" | prepend: site.baseurl }}"></script>
+<script type="text/javascript">
+    $(function($) {
+        $.slidebars();
+
+        var steps = [];
+        var images = [
+            {% for image in page.backgrounds %}'{{ image }}',{% endfor %}
+        ];
+
+        if (images.length > 0) {
+            $('.loader').addClass('loading');
+
+            steps = scrollSteps(images.length);
+
+            $.backstretch(images, {
+                fade: 1000
+            });
+
+            $.backstretch('pause');
+        }
+
+        $(document).on("backstretch.before", function (e, instance, index) {
+            $('.loader').addClass('loading');
+        });
+
+        $(document).on('scrollstop', function () {
+            if (steps.length > 0) {
+                var percentage = scrollPercentage();
+
+                for (var i = 0; i < steps.length; i++) {
+                    if (percentage < steps[i]) {
+                        if (i == $("body").data("backstretch").index) {
+                            break;
+                        }
+
+                        $.backstretch('show', i);
+                        break;
+                    }
+                }
+            }
+        });
+
+        $(document).on("backstretch.after", function (e, instance, index) {
+            $('.loader').removeClass('loading');
+        });
+    });
+</script>
+<!--<script>-->
+    <!--(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){-->
+        <!--(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),-->
+            <!--m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)-->
+    <!--})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');-->
+
+    <!--ga('create', 'UA-57546552-18', 'auto');-->
+    <!--ga('send', 'pageview');-->
+
+<!--</script>-->
